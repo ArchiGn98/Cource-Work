@@ -30,20 +30,20 @@ SOURCES += \
     registration.cpp \
     Programm.cpp \
     admin.cpp \
-    guest.cpp
+    user.cpp
 
 HEADERS += \
         mainwindow.h \
     registration.h \
     Programm.h \
     admin.h \
-    guest.h
+    user.h
 
 FORMS += \
         mainwindow.ui \
     registration.ui \
     admin.ui \
-    guest.ui
+    user.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

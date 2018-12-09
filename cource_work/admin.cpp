@@ -22,6 +22,7 @@ Admin::Admin(QWidget *parent) :
     QList<QString> stringsList;
     stringsList.append("All");
     stringsList.append("Registration");
+    stringsList.append("Login");
     stringsList.append("Insert in DB");
     stringsList.append("Buttons Push");
 
@@ -37,6 +38,19 @@ Admin::Admin(QWidget *parent) :
     ui->guests->setColumnWidth(2,200);
     ui->guests->setStyleSheet("background-color:#fcfcfc; gridline-color: #e8560d;");
 
+    ui->workers->setColumnCount(4);
+    ui->workers->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("ID")));
+    ui->workers->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Name")));
+    ui->workers->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Story_title")));
+    ui->workers->setHorizontalHeaderItem(3, new QTableWidgetItem(tr("Story")));
+    ui->workers->setShowGrid(true);
+    ui->workers->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->workers->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->workers->setColumnHidden(0, true);
+    ui->guests->setColumnWidth(2,200);
+    ui->guests->setColumnWidth(3,300);
+    ui->workers->setStyleSheet("background-color:#fcfcfc; gridline-color: #e8560d;");
+
     ui->comboBox->addItems(stringsList);
     ui->pushButton->setStyleSheet("background-color:#e8560d; color: #fcfcfc; padding:10px; font: 16pt");
     ui->pushButton_2->setStyleSheet("background-color:#e8560d; color: #fcfcfc; padding:10px; font: 16pt");
@@ -44,6 +58,7 @@ Admin::Admin(QWidget *parent) :
 
     ui->Jounal->setStyleSheet("color: #fcfcfc; font:24pt");
     ui->Guests->setStyleSheet("color: #fcfcfc; font:24pt");
+    ui->workers_label->setStyleSheet("color: #fcfcfc; font:24pt");
 
 }
 
@@ -88,6 +103,24 @@ void Admin::refreshGuests()
          }
 }
 
+void Admin::refreshWorkers()
+{
+    int n = ui->workers->rowCount();
+         for( int i = 0; i < n; i++ ) ui->workers->removeRow( 0 );
+
+         programm->selectFromWorkers();
+
+         while (programm->getQry()->next())
+         {
+              ui->workers->insertRow(0);
+              ui->workers->setItem(0, 0, new QTableWidgetItem(programm->getQry()->value(0).toString()));
+              ui->workers->setItem(0, 1, new QTableWidgetItem(programm->getQry()->value(1).toString()));
+              ui->workers->setItem(0, 2, new QTableWidgetItem(programm->getQry()->value(2).toString()));
+              ui->workers->setItem(0, 3, new QTableWidgetItem(programm->getQry()->value(3).toString()));
+              ui->workers->setRowHeight(0, 20);
+         }
+}
+
 void Admin::setProgramm(Programm *p)
 {
     programm = p;
@@ -99,6 +132,7 @@ void Admin::on_pushButton_2_clicked()
 {
         refreshJournal();
         refreshGuests();
+        refreshWorkers();
 }
 
 void Admin::on_pushButton_clicked()

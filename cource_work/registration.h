@@ -1,6 +1,6 @@
 #ifndef REGISTRATION_H
 #define REGISTRATION_H
-#include<Programm.h>
+#include "Programm.h"
 #include <QDate>
 #include <QMainWindow>
 

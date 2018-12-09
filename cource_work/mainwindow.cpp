@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     registration = new Registration();
     admin = new Admin();
-    guest = new Guest();
+    user = new User();
     ui->setupUi(this);
 
     ui->centralWidget->setStyleSheet("background-color:#515151;");
@@ -54,9 +54,22 @@ void MainWindow::on_sign_clicked()
         else {
             if(isNumb){
                 if(programm->isGuest(nickname,password)){
-                    guest->setName(nickname);
-                    guest->setProgramm(programm);
-                    guest->show();
+                    user->setName(nickname);
+                    user->setProgramm(programm);
+                    user->setUser("Guest");
+                    user->show();
+                    date = QDate::currentDate();
+                    time = QTime::currentTime();
+                    programm->insertJournal(date.toString("yyyy-MM-dd"), time.toString("hh:mm:ss"), nickname, "Login Guest");
+                }
+                else if (programm->isWorker(nickname, password)) {
+                    user->setName(nickname);
+                    user->setProgramm(programm);
+                    user->setUser("Worker");
+                    user->show();
+                    date = QDate::currentDate();
+                    time = QTime::currentTime();
+                    programm->insertJournal(date.toString("yyyy-MM-dd"), time.toString("hh:mm:ss"), nickname, "Login Worker");
                 }
                 else {
                     QMessageBox::information(this, "Password Error", "This user does't exist, try one more time!");

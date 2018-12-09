@@ -5,7 +5,7 @@
 #include <registration.h>
 #include <admin.h>
 #include "Programm.h"
-#include <guest.h>
+#include <user.h>
 #include <QDate>
 #include <memory>
 namespace Ui {
@@ -31,7 +31,7 @@ private:
     Registration * registration;
     Programm * programm;
     Admin * admin;
-    Guest * guest;
+    User * user;
     QDate date;
     QTime time;
 };

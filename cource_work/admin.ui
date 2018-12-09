@@ -35,7 +35,24 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableWidget" name="guests"/>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTableWidget" name="guests"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="workers_label">
+         <property name="text">
+          <string>Workers:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="workers"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>

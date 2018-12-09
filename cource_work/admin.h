@@ -3,7 +3,7 @@
 
 #include <QDate>
 #include <QMainWindow>
-#include <Programm.h>
+#include "Programm.h"
 
 namespace Ui {
 class Admin;
@@ -18,6 +18,7 @@ public:
     ~Admin();
     void refreshJournal();
     void refreshGuests();
+    void refreshWorkers();
     void setProgramm(Programm *p);
 private slots:
     void on_pushButton_2_clicked();

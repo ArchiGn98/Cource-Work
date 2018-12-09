@@ -55,6 +55,9 @@ private:
     bool testData();
     void showCompetition();
     void showEfir();
+    int getProgrammId(const QString &name);
+    int getStoryId(const QString &title);
+    int getWorkerId(const QString &name);
 public:
     Programm();
     bool launch();
@@ -64,9 +67,10 @@ public:
     bool insertJournal(const QString &date, const QString &time, const QString &username, const QString &action);
     bool insertProgramm_Guest(int programm_id, int guest_id);
     bool insertProgramm_Guest(const QString &name,const QString &programm_title);
-    bool insertWorker_Story(int worker_id, int story_id);
+    bool insertWorker_Story(const QString &worker_nickname, const QString &programm_name, const QString &story_title, const QString &story_text);
     void selectFromJournal(const QString &str);
     void selectFromGuests();
+    void selectFromWorkers();
     void selectFromProgramms_Efir();
     void selectFromProgrammsWideInfo(const QString &title);
     QSqlDatabase getDb();
@@ -77,6 +81,7 @@ public:
     void setQry(QSqlQuery *value);
     bool isGuest(const QString &login, int password);
     bool isGuest(const QString &login);
+    bool isWorker(const QString &login, int password);
     bool isWorker(const QString &login);
 
 };
