@@ -6,10 +6,9 @@ Programm::Programm()
     db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     db->setDatabaseName(dataBaseName);
     qry = new QSqlQuery(*db);
-
 }
 
-bool Programm::insertGuest(const QString &name_surname, const QString &contacts, const QString &description, int password, const QString &login)
+bool Programm::insertGuest(const QString& name_surname, const QString& contacts, const QString& description, int password, const QString& login)
 {
     qry->prepare("INSERT INTO guest(name_surname, contacts, description, password, login) VALUES(?,?,?,?,?)");
     qry->addBindValue(name_surname);
@@ -17,8 +16,8 @@ bool Programm::insertGuest(const QString &name_surname, const QString &contacts,
     qry->addBindValue(description);
     qry->addBindValue(password);
     qry->addBindValue(login);
-    if(qry->exec()){
-        qDebug()<<"Inserted Guest: " << name_surname;
+    if (qry->exec()) {
+        qDebug() << "Inserted Guest: " << name_surname;
         qry->clear();
         date = QDate::currentDate();
         time = QTime::currentTime();
@@ -26,13 +25,13 @@ bool Programm::insertGuest(const QString &name_surname, const QString &contacts,
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Guest:" << qry->lastError().text();
+        qDebug() << "Failed Insert Guest:" << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::insertWorker(const QString &name_surname, const QString &position, const QString &contacts, int password, const QString &login)
+bool Programm::insertWorker(const QString& name_surname, const QString& position, const QString& contacts, int password, const QString& login)
 {
     qry->prepare("INSERT INTO worker(name_surname, position, contacts, password, login) VALUES(?,?,?,?,?)");
     qry->addBindValue(name_surname);
@@ -40,8 +39,8 @@ bool Programm::insertWorker(const QString &name_surname, const QString &position
     qry->addBindValue(contacts);
     qry->addBindValue(password);
     qry->addBindValue(login);
-    if(qry->exec()){
-        qDebug()<<"Inserted Worker: " << name_surname;
+    if (qry->exec()) {
+        qDebug() << "Inserted Worker: " << name_surname;
         qry->clear();
         date = QDate::currentDate();
         time = QTime::currentTime();
@@ -49,19 +48,19 @@ bool Programm::insertWorker(const QString &name_surname, const QString &position
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Guest:" << qry->lastError().text();
+        qDebug() << "Failed Insert Guest:" << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::insertStory(const QString &description, const QString &title)
+bool Programm::insertStory(const QString& description, const QString& title)
 {
-    qry->prepare("INSERT INTO story(description, title) VALUES(?,?)");
+    qry->prepare("INSERT INTO story(description, titile) VALUES(?,?)");
     qry->addBindValue(description);
     qry->addBindValue(title);
-    if(qry->exec()){
-        qDebug()<<"Inserted Story: " << title;
+    if (qry->exec()) {
+        qDebug() << "Inserted Story: " << title;
         qry->clear();
         date = QDate::currentDate();
         time = QTime::currentTime();
@@ -69,26 +68,26 @@ bool Programm::insertStory(const QString &description, const QString &title)
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Story:" << qry->lastError().text();
+        qDebug() << "Failed Insert Story:" << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::insertJournal(const QString &date, const QString &time, const QString &username, const QString &action)
+bool Programm::insertJournal(const QString& date, const QString& time, const QString& username, const QString& action)
 {
     qry->prepare("INSERT INTO journal(date, time, username, action) VALUES(?,?,?,?)");
     qry->addBindValue(date);
     qry->addBindValue(time);
     qry->addBindValue(username);
     qry->addBindValue(action);
-    if(qry->exec()){
-        qDebug()<<"Inserted Journal: " << action << "  " << date << " " << time;
+    if (qry->exec()) {
+        qDebug() << "Inserted Journal: " << action << "  " << date << " " << time;
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Journal:" << qry->lastError().text();
+        qDebug() << "Failed Insert Journal:" << qry->lastError().text();
         qry->clear();
         return false;
     }
@@ -99,66 +98,65 @@ bool Programm::insertProgramm_Guest(int programm_id, int guest_id)
     qry->prepare("INSERT INTO programm_guest(id_programm, id_guest) VALUES(?,?)");
     qry->addBindValue(programm_id);
     qry->addBindValue(guest_id);
-    if(qry->exec()){
-        qDebug()<<"Inserted Programm_Guest:";
+    if (qry->exec()) {
+        qDebug() << "Inserted Programm_Guest:";
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Programm_Guest:" << qry->lastError().text();
+        qDebug() << "Failed Insert Programm_Guest:" << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::insertProgramm_Guest(const QString &name, const QString &programm_title)
+bool Programm::insertProgramm_Guest(const QString& name, const QString& programm_title)
 {
     int programm_id, guest_id;
     qry->prepare("SELECT id, login FROM guest WHERE login = ?");
     qry->addBindValue(name);
-    if(qry->exec()){
+    if (qry->exec()) {
         qry->next();
         guest_id = qry->value(0).toInt();
         qry->clear();
         qry->prepare("SELECT id, title FROM programm WHERE title = ?");
         qry->addBindValue(programm_title);
-        if(qry->exec()){
+        if (qry->exec()) {
             qry->next();
             programm_id = qry->value(0).toInt();
             insertProgramm_Guest(programm_id, guest_id);
-            qDebug()<<"Insertion programm_guest succesfull:";
+            qDebug() << "Insertion programm_guest succesfull:";
             date = QDate::currentDate();
             time = QTime::currentTime();
             insertJournal(date.toString("yyyy-MM-dd"), time.toString("hh:mm:ss"), name, "Insert Program_guest");
             return true;
         }
         else {
-            qDebug()<<"Failed find programm id:" << qry->lastError().text();
+            qDebug() << "Failed find programm id:" << qry->lastError().text();
         }
     }
     else {
-        qDebug()<<"Failed find guest id:" << qry->lastError().text();
-
+        qDebug() << "Failed find guest id:" << qry->lastError().text();
     }
     return false;
 }
 
-bool Programm::insertWorker_Story(const QString &worker_nickname, const QString &programm_name, const QString &story_title, const QString &story_text)
+bool Programm::insertWorker_Story(const QString& worker_nickname, const QString& programm_name, const QString& story_title, const QString& story_text)
 {
     int id_programm = getProgrammId(programm_name);
     qry->prepare("INSERT INTO story(description, titile, id_programm) VALUES(?,?,?)");
     qry->addBindValue(story_text);
     qry->addBindValue(story_title);
     qry->addBindValue(id_programm);
-    if(qry->exec()){
-        qDebug()<<"SELECT SUCCESS";
+    if (qry->exec()) {
+        qDebug() << "SELECT SUCCESS";
         int id_worker = getWorkerId(worker_nickname);
         int id_story = getStoryId(story_title);
         qry->prepare("INSERT INTO story_worker(id_story, id_worker) VALUES(?,?)");
         qry->addBindValue(id_worker);
         qry->addBindValue(id_story);
-        if(qry->exec()){
-            qDebug()<<"Inserted Worker_Strory:";
+        if (qry->exec()) {
+            qDebug() << "Inserted Worker_Strory:";
             qry->clear();
             date = QDate::currentDate();
             time = QTime::currentTime();
@@ -166,7 +164,7 @@ bool Programm::insertWorker_Story(const QString &worker_nickname, const QString 
             return true;
         }
         else {
-            qDebug()<<"Failed Insert Worker_Strory:" << qry->lastError().text();
+            qDebug() << "Failed Insert Worker_Strory:" << qry->lastError().text();
             qry->clear();
             return false;
         }
@@ -176,12 +174,11 @@ bool Programm::insertWorker_Story(const QString &worker_nickname, const QString 
     }
 
     return false;
-
 }
 
-void Programm::selectFromJournal(const QString &str)
+void Programm::selectFromJournal(const QString& str)
 {
-    if(str == "All"){
+    if (str == "All") {
         qry->prepare("SELECT * FROM journal");
     }
     else if (str == "Registration") {
@@ -200,8 +197,8 @@ void Programm::selectFromJournal(const QString &str)
         qry->prepare("SELECT * FROM journal");
     }
 
-    if(qry->exec()){
-        qDebug()<<"SELECT SUCCESS";
+    if (qry->exec()) {
+        qDebug() << "SELECT SUCCESS";
     }
     else {
         qDebug() << qry->lastError().text();
@@ -213,8 +210,8 @@ void Programm::selectFromGuests()
     qry->prepare("SELECT guest.id, guest.name_surname, programm.title FROM programm JOIN guest JOIN programm_guest "
                  "ON programm_guest.id_programm = programm.id AND programm_guest.id_guest = guest.id");
 
-    if(qry->exec()){
-        qDebug()<<"SELECT SUCCESS";
+    if (qry->exec()) {
+        qDebug() << "SELECT SUCCESS";
     }
     else {
         qDebug() << qry->lastError().text();
@@ -224,11 +221,11 @@ void Programm::selectFromGuests()
 void Programm::selectFromWorkers()
 {
     qry->prepare("SELECT worker.id, worker.name_surname, story.titile, story.description "
-                 "FROM worker JOIN story JOIN story_worker "
-                 "ON story_worker.id_worker = worker.id AND story_worker.id_story = story.id");
+                 " FROM worker JOIN story JOIN story_worker "
+                 " ON story_worker.id_worker = worker.id AND story_worker.id_story = story.id");
 
-    if(qry->exec()){
-        qDebug()<<"SELECT SUCCESS";
+    if (qry->exec()) {
+        qDebug() << "SELECT SUCCESS";
     }
     else {
         qDebug() << qry->lastError().text();
@@ -238,15 +235,15 @@ void Programm::selectFromWorkers()
 void Programm::selectFromProgramms_Efir()
 {
     qry->prepare("SELECT programm.id, programm.title, time_start, time_end FROM programm JOIN efir ON programm.id_efir = efir.id");
-    if(qry->exec()){
-        qDebug()<<"SELECT SUCCESS";
+    if (qry->exec()) {
+        qDebug() << "SELECT SUCCESS";
     }
     else {
         qDebug() << qry->lastError().text();
     }
 }
 
-void Programm::selectFromProgrammsWideInfo(const QString &title)
+void Programm::selectFromProgrammsWideInfo(const QString& title)
 {
     qry->prepare("SELECT programm.title, time_start, time_end, discipline, description,"
                  " participant.name_surname, biography, achivements, facts FROM programm JOIN efir JOIN competition JOIN participant"
@@ -257,8 +254,8 @@ void Programm::selectFromProgrammsWideInfo(const QString &title)
                  "participant_competition.id_competition = competition.id"
                  " WHERE programm.title = ?");
     qry->addBindValue(title);
-    if(qry->exec()){
-        qDebug()<<"SELECT SUCCESS";
+    if (qry->exec()) {
+        qDebug() << "SELECT SUCCESS";
     }
     else {
         qDebug() << qry->lastError().text();
@@ -276,10 +273,10 @@ QSqlDatabase Programm::getDb()
 //    return *qry;
 //}
 
-Programm &Programm::operator=(Programm &&source)
+Programm& Programm::operator=(Programm&& source)
 {
     qDebug() << "move constructor Programm";
-    if(this==&source){
+    if (this == &source) {
         return *this;
     }
     delete qry;
@@ -291,12 +288,11 @@ Programm &Programm::operator=(Programm &&source)
     source.db = nullptr;
 
     return *this;
-
 }
-Programm &Programm::operator=(Programm &source)
+Programm& Programm::operator=(Programm& source)
 {
     qDebug() << "copy constructor Programm";
-    if(this==&source){
+    if (this == &source) {
         return *this;
     }
     delete qry;
@@ -304,23 +300,19 @@ Programm &Programm::operator=(Programm &source)
     qry = source.qry;
     db = source.db;
 
-
     return *this;
-
 }
 
-Programm *Programm::operator=(Programm *source)
+Programm* Programm::operator=(Programm* source)
 {
     qDebug() << "copy constructor Programm*";
-    if(this==source){
+    if (this == source) {
         return this;
     }
     delete qry;
     delete db;
     qry = source->qry;
     db = source->db;
-
-
 
     return this;
 }
@@ -329,64 +321,65 @@ bool Programm::launch()
 {
     qDebug() << "Launching DB...";
     if (db->open()) {
-      if (qry->exec(queryCreateTableCompetition))
-        qDebug() << "Competition OK.";
-      else
-        qDebug() << "Competition FAIL.";
+        if (qry->exec(queryCreateTableCompetition))
+            qDebug() << "Competition OK.";
+        else
+            qDebug() << "Competition FAIL.";
 
-      if (qry->exec(queryCreateTableEfir))
-        qDebug() << "Efir OK.";
-      else
-        qDebug() << "Efir FAIL.";
+        if (qry->exec(queryCreateTableEfir))
+            qDebug() << "Efir OK.";
+        else
+            qDebug() << "Efir FAIL.";
 
-      if (qry->exec(queryCreateTableGuest))
-        qDebug() << "Guest OK.";
-      else
-        qDebug() << "Guest FAIL.";
-      if (qry->exec(queryCreateTableJournal))
-        qDebug() << "Journal OK.";
-      else
-        qDebug() << "Journal FAIL.";
+        if (qry->exec(queryCreateTableGuest))
+            qDebug() << "Guest OK.";
+        else
+            qDebug() << "Guest FAIL.";
+        if (qry->exec(queryCreateTableJournal))
+            qDebug() << "Journal OK.";
+        else
+            qDebug() << "Journal FAIL.";
 
-      if (qry->exec(queryCreateTableParticipant))
-        qDebug() << "Participant OK.";
-      else
-        qDebug() << "Participant FAIL.";
+        if (qry->exec(queryCreateTableParticipant))
+            qDebug() << "Participant OK.";
+        else
+            qDebug() << "Participant FAIL.";
 
-      if (qry->exec(queryCreateTableParticipant_Competition))
-        qDebug() << "Participant_comp OK.";
-      else
-        qDebug() << "Participant_comp FAIL.";
-      if (qry->exec(queryCreateTableProgramm))
-        qDebug() << "Programm OK.";
-      else
-        qDebug() << "programm FAIL.";
+        if (qry->exec(queryCreateTableParticipant_Competition))
+            qDebug() << "Participant_comp OK.";
+        else
+            qDebug() << "Participant_comp FAIL.";
+        if (qry->exec(queryCreateTableProgramm))
+            qDebug() << "Programm OK.";
+        else
+            qDebug() << "programm FAIL.";
 
-      if (qry->exec(queryCreateTableProgramm_Competition))
-        qDebug() << "Prog_comp OK.";
-      else
-        qDebug() << "Prog_comp FAIL.";
+        if (qry->exec(queryCreateTableProgramm_Competition))
+            qDebug() << "Prog_comp OK.";
+        else
+            qDebug() << "Prog_comp FAIL.";
 
-      if (qry->exec(queryCreateTableProgramm_Guest))
-        qDebug() << "Prog_guest OK.";
-      else
-        qDebug() << "Prog_guest FAIL.";
-      if (qry->exec(queryCreateTableStory))
-        qDebug() << "story OK.";
-      else
-        qDebug() << "story FAIL.";
+        if (qry->exec(queryCreateTableProgramm_Guest))
+            qDebug() << "Prog_guest OK.";
+        else
+            qDebug() << "Prog_guest FAIL.";
+        if (qry->exec(queryCreateTableStory))
+            qDebug() << "story OK.";
+        else
+            qDebug() << "story FAIL.";
 
-      if (qry->exec(queryCreateTableStory_Worker))
-        qDebug() << "story_worker OK.";
-      else
-        qDebug() << "story_worker FAIL.";
+        if (qry->exec(queryCreateTableStory_Worker))
+            qDebug() << "story_worker OK.";
+        else
+            qDebug() << "story_worker FAIL.";
 
-      if (qry->exec(queryCreateTableWorker))
-        qDebug() << "worker OK.";
-      else
-        qDebug() << "worker FAIL.";
-    } else {
-      qDebug() << "SQLite Error: " << db->lastError().text();
+        if (qry->exec(queryCreateTableWorker))
+            qDebug() << "worker OK.";
+        else
+            qDebug() << "worker FAIL.";
+    }
+    else {
+        qDebug() << "SQLite Error: " << db->lastError().text();
     }
     qry->clear();
 
@@ -398,14 +391,13 @@ bool Programm::launch()
 bool Programm::testData()
 {
 
-    fillCompetition("Football","This is football competition in Brazil");
-    fillCompetition("Basketball","This is basketball competition in USA");
-    fillCompetition("Tenis","This is tenis competition in Peru");
-    fillCompetition("Snowboarding","This is snowboarding competition in New Zeland");
+    fillCompetition("Football", "This is football competition in Brazil");
+    fillCompetition("Basketball", "This is basketball competition in USA");
+    fillCompetition("Tenis", "This is tenis competition in Peru");
+    fillCompetition("Snowboarding", "This is snowboarding competition in New Zeland");
 
-    fillEfir("Morning","2018-12-28 12:45:00","2018-12-28 14:45:00");
-    fillEfir("Evening","2018-12-28 19:45:00","2018-12-28 21:45:00");
-
+    fillEfir("Morning", "2018-12-28 12:45:00", "2018-12-28 14:45:00");
+    fillEfir("Evening", "2018-12-28 19:45:00", "2018-12-28 21:45:00");
 
     fillParticipant("Nikola Sturman", "Norwey sportsman. Burned 13.09.1974 in Africa.", "3 gold medals", "loves unicornes", "good");
     fillParticipant("Misha Sapkovskii", "British sportsman. Burned 11.12.1968", "2 silver medals", "loves mashrooms", "awesome");
@@ -415,22 +407,22 @@ bool Programm::testData()
     fillParticipant("Pol Lartni", "French sportsman. Didnt borne yet", "10 silver medals", "loves to eat but cant afford this", "awesome");
     fillParticipant("Kemper Battlefield", "Just sportsman. Borned in India 11.05.2000", "0 gold medals", "loves hot chairs", "good");
 
-    fillParticipant_competition(1,1);
-    fillParticipant_competition(2,1);
-    fillParticipant_competition(3,2);
-    fillParticipant_competition(4,2);
-    fillParticipant_competition(5,3);
-    fillParticipant_competition(6,3);
-    fillParticipant_competition(7,4);
-    fillParticipant_competition(1,4);
+    fillParticipant_competition(1, 1);
+    fillParticipant_competition(2, 1);
+    fillParticipant_competition(3, 2);
+    fillParticipant_competition(4, 2);
+    fillParticipant_competition(5, 3);
+    fillParticipant_competition(6, 3);
+    fillParticipant_competition(7, 4);
+    fillParticipant_competition(1, 4);
 
-    fillProgramm("Good morning USA",1);
-    fillProgramm("Good evening USA",2);
+    fillProgramm("Good morning USA", 1);
+    fillProgramm("Good evening USA", 2);
 
-    fillProgramm_competition(1,1);
-    fillProgramm_competition(1,2);
-    fillProgramm_competition(2,3);
-    fillProgramm_competition(2,4);
+    fillProgramm_competition(1, 1);
+    fillProgramm_competition(1, 2);
+    fillProgramm_competition(2, 3);
+    fillProgramm_competition(2, 4);
 
     showCompetition();
     showEfir();
@@ -442,20 +434,20 @@ void Programm::showCompetition()
     qry->prepare("SELECT discipline, description FROM competition");
     std::vector<QString> diciplines;
     std::vector<QString> descriptions;
-    if(qry->exec()){
+    if (qry->exec()) {
         while (qry->next()) {
             diciplines.push_back(qry->value(0).toString());
             descriptions.push_back(qry->value(1).toString());
         }
-        for(size_t i = 0; i < diciplines.size(); ++i){
-            qDebug()<< "==================================";
-            qDebug()<< "Dicipline: " << diciplines.at(i);
-            qDebug()<< "Description: " << descriptions.at(i);
+        for (size_t i = 0; i < diciplines.size(); ++i) {
+            qDebug() << "==================================";
+            qDebug() << "Dicipline: " << diciplines.at(i);
+            qDebug() << "Description: " << descriptions.at(i);
         }
-        qDebug()<< "==================================";
+        qDebug() << "==================================";
     }
     else {
-        qDebug()<< "Failed show competition";
+        qDebug() << "Failed show competition";
     }
 }
 
@@ -464,103 +456,116 @@ void Programm::showEfir()
     qry->prepare("SELECT time_start, time_end FROM efir");
     std::vector<QString> start;
     std::vector<QString> end;
-    if(qry->exec()){
+    if (qry->exec()) {
         while (qry->next()) {
             start.push_back(qry->value(0).toString());
             end.push_back(qry->value(1).toString());
         }
-        for(size_t i = 0; i < start.size(); ++i){
-            qDebug()<< "==================================";
-            qDebug()<< "Start: " << start.at(i);
-            qDebug()<< "End: " << end.at(i);
+        for (size_t i = 0; i < start.size(); ++i) {
+            qDebug() << "==================================";
+            qDebug() << "Start: " << start.at(i);
+            qDebug() << "End: " << end.at(i);
         }
-        qDebug()<< "==================================";
+        qDebug() << "==================================";
     }
     else {
-        qDebug()<< "Failed show Efir";
+        qDebug() << "Failed show Efir";
     }
 }
 
-int Programm::getProgrammId(const QString &name)
+int Programm::getProgrammId(const QString& name)
 {
     qry->prepare("SELECT id FROM programm WHERE title = ?");
     qry->addBindValue(name);
-    if(qry->exec()){
+    if (qry->exec()) {
         qry->next();
         return qry->value(0).toInt();
     }
     else {
-        qDebug()<< "Failed get id: " << qry->lastError().text();
+        qDebug() << "Failed get id: " << qry->lastError().text();
     }
     return 0;
 }
 
-int Programm::getStoryId(const QString &title)
+int Programm::getStoryId(const QString& title)
 {
     qry->prepare("SELECT id FROM story WHERE titile = ?");
     qry->addBindValue(title);
-    if(qry->exec()){
+    if (qry->exec()) {
         qry->next();
         return qry->value(0).toInt();
     }
     else {
-        qDebug()<< "Failed get id: " << qry->lastError().text();
+        qDebug() << "Failed get id: " << qry->lastError().text();
     }
     return 0;
 }
 
-int Programm::getWorkerId(const QString &name)
+int Programm::getWorkerId(const QString& name)
 {
     qry->prepare("SELECT id FROM worker WHERE login = ?");
     qry->addBindValue(name);
-    if(qry->exec()){
+    if (qry->exec()) {
         qry->next();
         return qry->value(0).toInt();
     }
     else {
-        qDebug()<< "Failed get id: " << qry->lastError().text();
+        qDebug() << "Failed get id: " << qry->lastError().text();
     }
     return 0;
 }
 
+int Programm::getEfirId(const QString &name)
+{
+    qry->prepare("SELECT id FROM efir WHERE name = ?");
+    qry->addBindValue(name);
+    if (qry->exec()) {
+        qry->next();
+        return qry->value(0).toInt();
+    }
+    else {
+        qDebug() << "Failed get id: " << qry->lastError().text();
+    }
+    return 0;
+}
 
-QSqlQuery *Programm::getQry() const
+QSqlQuery* Programm::getQry() const
 {
     return qry;
 }
 
-void Programm::setQry(QSqlQuery *value)
+void Programm::setQry(QSqlQuery* value)
 {
     qry = value;
 }
 
-bool Programm::isGuest(const QString &login, int password)
+bool Programm::isGuest(const QString& login, int password)
 {
     qry->prepare("SELECT * FROM guest WHERE login = ? AND password = ?");
     qry->addBindValue(login);
     qry->addBindValue(password);
-    if(qry->exec()){
-        if(qry->next()){
+    if (qry->exec()) {
+        if (qry->next()) {
             return true;
         }
     }
-    while(qry->next()){
-        qDebug()<<qry->value(0).toString();
-        qDebug()<<qry->value(1).toString();
-        qDebug()<<qry->value(2).toString();
-        qDebug()<<qry->value(3).toString();
-        qDebug()<<qry->value(4).toString();
-        qDebug()<<qry->value(5).toString();
+    while (qry->next()) {
+        qDebug() << qry->value(0).toString();
+        qDebug() << qry->value(1).toString();
+        qDebug() << qry->value(2).toString();
+        qDebug() << qry->value(3).toString();
+        qDebug() << qry->value(4).toString();
+        qDebug() << qry->value(5).toString();
     }
     return false;
 }
 
-bool Programm::isGuest(const QString &login)
+bool Programm::isGuest(const QString& login)
 {
     qry->prepare("SELECT * FROM guest WHERE login = ?");
     qry->addBindValue(login);
-    if(qry->exec()){
-        if(qry->next()){
+    if (qry->exec()) {
+        if (qry->next()) {
             return true;
         }
     }
@@ -568,75 +573,104 @@ bool Programm::isGuest(const QString &login)
     return false;
 }
 
-bool Programm::isWorker(const QString &login, int password)
+bool Programm::isWorker(const QString& login, int password)
 {
     qry->prepare("SELECT * FROM worker WHERE login = ? AND password = ?");
     qry->addBindValue(login);
     qry->addBindValue(password);
-    if(qry->exec()){
-        if(qry->next()){
+    if (qry->exec()) {
+        if (qry->next()) {
             return true;
         }
     }
-    while(qry->next()){
-        qDebug()<<qry->value(0).toString();
-        qDebug()<<qry->value(1).toString();
-        qDebug()<<qry->value(2).toString();
-        qDebug()<<qry->value(3).toString();
-        qDebug()<<qry->value(4).toString();
-        qDebug()<<qry->value(5).toString();
+    while (qry->next()) {
+        qDebug() << qry->value(0).toString();
+        qDebug() << qry->value(1).toString();
+        qDebug() << qry->value(2).toString();
+        qDebug() << qry->value(3).toString();
+        qDebug() << qry->value(4).toString();
+        qDebug() << qry->value(5).toString();
     }
     return false;
 }
 
-bool Programm::isWorker(const QString &login)
+bool Programm::isWorker(const QString& login)
 {
     qry->prepare("SELECT * FROM worker WHERE login = ?");
     qry->addBindValue(login);
-    if(qry->exec()){
-        if(qry->next()){
+    if (qry->exec()) {
+        if (qry->next()) {
             return true;
         }
     }
     return false;
 }
 
-bool Programm::fillCompetition(const QString &dicipline, const QString &description)
+void Programm::selectGuestsForProgramm(const QString &title)
+{
+    qry->prepare("SELECT name_surname FROM guest WHERE ? "
+                 "IN (SELECT title from programm JOIN programm_guest ON programm_guest.id_programm = programm.id "
+                 "WHERE programm_guest.id_guest = guest.id)");
+    qry->addBindValue(title);
+    if(qry->exec()){
+        qDebug()<< "SUCCESS";
+    }
+    else qDebug() << "NOT SUCCESS";
+
+
+
+}
+
+void Programm::selectStroriesForWorker(const QString &worker)
+{
+    qry->prepare("SELECT titile FROM story WHERE ? "
+                 "IN (SELECT name_surname from worker JOIN story_worker "
+                 "ON story_worker.id_worker = worker.id "
+                 "WHERE story_worker.id_story = story.id)");
+
+    qry->addBindValue(worker);
+    if(qry->exec()){
+        qDebug()<< "SUCCESS";
+    }
+    else qDebug() << "NOT SUCCESS";
+}
+
+bool Programm::fillCompetition(const QString& dicipline, const QString& description)
 {
     qry->prepare("INSERT INTO competition(discipline, description) VALUES(?,?)");
     qry->addBindValue(dicipline);
     qry->addBindValue(description);
-    if(qry->exec()){
-        qDebug()<<"Inserted Competition: " << dicipline;
+    if (qry->exec()) {
+        qDebug() << "Inserted Competition: " << dicipline;
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Competition:" << qry->lastError().text();
+        qDebug() << "Failed Insert Competition:" << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::fillEfir(const QString &name, const QString &time_start, const QString &time_end)
+bool Programm::fillEfir(const QString& name, const QString& time_start, const QString& time_end)
 {
     qry->prepare("INSERT INTO efir(name, time_start, time_end) VALUES(?,?,?)");
     qry->addBindValue(name);
     qry->addBindValue(time_start);
     qry->addBindValue(time_end);
-    if(qry->exec()){
-        qDebug()<<"Inserted Efir: " << name;
+    if (qry->exec()) {
+        qDebug() << "Inserted Efir: " << name;
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Efir: " << qry->lastError().text();
+        qDebug() << "Failed Insert Efir: " << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::fillParticipant(const QString &name_surname, const QString &bio, const QString &achivements, const QString &facts, const QString &result)
+bool Programm::fillParticipant(const QString& name_surname, const QString& bio, const QString& achivements, const QString& facts, const QString& result)
 {
     qry->prepare("INSERT INTO participant(name_surname, biography, achivements, facts, result) VALUES(?,?,?,?,?)");
     qry->addBindValue(name_surname);
@@ -644,30 +678,30 @@ bool Programm::fillParticipant(const QString &name_surname, const QString &bio, 
     qry->addBindValue(achivements);
     qry->addBindValue(facts);
     qry->addBindValue(result);
-    if(qry->exec()){
-        qDebug()<<"Inserted Participant: " << name_surname;
+    if (qry->exec()) {
+        qDebug() << "Inserted Participant: " << name_surname;
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Participant" << qry->lastError().text();
+        qDebug() << "Failed Insert Participant" << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
 
-bool Programm::fillProgramm(const QString &title, int id_efir)
+bool Programm::fillProgramm(const QString& title, int id_efir)
 {
     qry->prepare("INSERT INTO programm(title, id_efir) VALUES(?,?)");
     qry->addBindValue(title);
     qry->addBindValue(id_efir);
-    if(qry->exec()){
-        qDebug()<<"Inserted Programm: " << title;
+    if (qry->exec()) {
+        qDebug() << "Inserted Programm: " << title;
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Programm" << qry->lastError().text();
+        qDebug() << "Failed Insert Programm" << qry->lastError().text();
         qry->clear();
         return false;
     }
@@ -678,13 +712,13 @@ bool Programm::fillProgramm_competition(int id_programm, int id_competition)
     qry->prepare("INSERT INTO programm_competition(id_programm, id_competition) VALUES(?,?)");
     qry->addBindValue(id_programm);
     qry->addBindValue(id_competition);
-    if(qry->exec()){
-        qDebug()<<"Inserted Programm_Competition:";
+    if (qry->exec()) {
+        qDebug() << "Inserted Programm_Competition:";
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Programm_competition: " << qry->lastError().text();
+        qDebug() << "Failed Insert Programm_competition: " << qry->lastError().text();
         qry->clear();
         return false;
     }
@@ -695,19 +729,14 @@ bool Programm::fillParticipant_competition(int id_participant, int id_competitio
     qry->prepare("INSERT INTO participant_competition(id_participant, id_competition) VALUES(?,?)");
     qry->addBindValue(id_participant);
     qry->addBindValue(id_competition);
-    if(qry->exec()){
-        qDebug()<<"Inserted Participant_Competition:";
+    if (qry->exec()) {
+        qDebug() << "Inserted Participant_Competition:";
         qry->clear();
         return true;
     }
     else {
-        qDebug()<<"Failed Insert Participant_competition: " << qry->lastError().text();
+        qDebug() << "Failed Insert Participant_competition: " << qry->lastError().text();
         qry->clear();
         return false;
     }
 }
-
-
-
-
-

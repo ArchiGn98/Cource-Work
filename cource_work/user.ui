@@ -198,6 +198,13 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>BACK</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="story_label">
         <property name="text">
          <string>Your story:</string>

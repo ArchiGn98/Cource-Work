@@ -3,9 +3,9 @@
 
 #include <QMessageBox>
 
-Registration::Registration(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::Registration)
+Registration::Registration(QWidget* parent)
+    : QMainWindow(parent)
+    , ui(new Ui::Registration)
 {
     ui->setupUi(this);
     //programm = new Programm();
@@ -54,14 +54,11 @@ Registration::~Registration()
     delete ui;
 }
 
-void Registration::setProgramm(Programm *p)
+void Registration::setProgramm(Programm* p)
 {
     programm = p;
     p = nullptr;
-
 }
-
-
 
 void Registration::on_guest_btn_clicked()
 {
@@ -83,7 +80,7 @@ void Registration::on_worker_btn_clicked()
     ui->guest->setVisible(false);
 }
 
-void Registration::on_pushButton_clicked()//Guest back
+void Registration::on_pushButton_clicked() //Guest back
 {
     date = QDate::currentDate();
     time = QTime::currentTime();
@@ -93,7 +90,7 @@ void Registration::on_pushButton_clicked()//Guest back
     ui->guest->setVisible(false);
 }
 
-void Registration::on_create_clicked()//worker
+void Registration::on_create_clicked() //worker
 {
 
     bool isNumb, isNumbRep;
@@ -103,11 +100,11 @@ void Registration::on_create_clicked()//worker
     contacts = ui->contacts->text();
     position = ui->position->text();
     nickname = ui->nickname->text();
-    password = ui->password->text().toInt(&isNumb,10);
-    password_rep = ui->password_rep->text().toInt(&isNumbRep,10);
-    if(password == password_rep){
-        if(isNumb){
-            if(!programm->isWorker(nickname)){
+    password = ui->password->text().toInt(&isNumb, 10);
+    password_rep = ui->password_rep->text().toInt(&isNumbRep, 10);
+    if (password == password_rep) {
+        if (isNumb) {
+            if (!programm->isWorker(nickname)) {
                 programm->insertWorker(name_surname, position, contacts, password, nickname);
                 date = QDate::currentDate();
                 time = QTime::currentTime();
@@ -117,7 +114,6 @@ void Registration::on_create_clicked()//worker
             else {
                 QMessageBox::information(this, "Nickname Error", "User with this nickname already exists");
             }
-
         }
         else {
             QMessageBox::information(this, "Password Error", "Password can be only number");
@@ -126,11 +122,9 @@ void Registration::on_create_clicked()//worker
     else {
         QMessageBox::information(this, "Password Error", "Passwords must be same");
     }
-
-
 }
 
-void Registration::on_create_2_clicked()//guest
+void Registration::on_create_2_clicked() //guest
 {
 
     bool isNumb, isNumbRep;
@@ -140,12 +134,12 @@ void Registration::on_create_2_clicked()//guest
     contacts = ui->contacts_guest->text();
     description = ui->description_guest->text();
     nickname = ui->nickname_guest->text();
-    password = ui->password_guest->text().toInt(&isNumb,10);
+    password = ui->password_guest->text().toInt(&isNumb, 10);
     password_rep = ui->password_rep_guest->text().toInt(&isNumbRep, 10);
-    if(password == password_rep){
-        if(isNumb){
-            if(!programm->isGuest(nickname)){
-                programm->insertGuest(name_surname,contacts,description,password,nickname);
+    if (password == password_rep) {
+        if (isNumb) {
+            if (!programm->isGuest(nickname)) {
+                programm->insertGuest(name_surname, contacts, description, password, nickname);
                 date = QDate::currentDate();
                 time = QTime::currentTime();
                 programm->insertJournal(date.toString("yyyy-MM-dd"), time.toString("hh:mm:ss"), nickname, "Acc created: Guest");
@@ -154,8 +148,6 @@ void Registration::on_create_2_clicked()//guest
             else {
                 QMessageBox::information(this, "Nickname Error", "User with this nickname already exists");
             }
-
-
         }
         else {
             QMessageBox::information(this, "Password Error", "Password can be only number");
@@ -164,11 +156,9 @@ void Registration::on_create_2_clicked()//guest
     else {
         QMessageBox::information(this, "Password Error", "Passwords must be same");
     }
-
-
 }
 
-void Registration::on_back_clicked()//worker back
+void Registration::on_back_clicked() //worker back
 {
     date = QDate::currentDate();
     time = QTime::currentTime();
@@ -178,7 +168,7 @@ void Registration::on_back_clicked()//worker back
     ui->guest->setVisible(false);
 }
 
-void Registration::on_pushButton_2_clicked()//выход к главному окну
+void Registration::on_pushButton_2_clicked() //выход к главному окну
 {
     date = QDate::currentDate();
     time = QTime::currentTime();

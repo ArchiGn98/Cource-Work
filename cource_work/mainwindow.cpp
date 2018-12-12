@@ -5,9 +5,9 @@
 
 //LOGIN
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
 {
     registration = new Registration();
     admin = new Admin();
@@ -26,16 +26,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->register_2->setStyleSheet("background-color:#e8560d; color: #fcfcfc; padding:10px; font: 16pt");
     programm = new Programm();
     programm->launch();
-
-    }
+}
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete programm;
 }
-
-
 
 void MainWindow::on_sign_clicked()
 
@@ -46,14 +43,14 @@ void MainWindow::on_sign_clicked()
     bool isNumb;
     nickname = ui->username->text();
     password = ui->password->text().toInt(&isNumb, 10);
-    if(isNumb){
-        if(nickname == "admin" && password==123456){
+    if (isNumb) {
+        if (nickname == "admin" && password == 123456) {
             admin->setProgramm(programm);
             admin->show();
         }
         else {
-            if(isNumb){
-                if(programm->isGuest(nickname,password)){
+            if (isNumb) {
+                if (programm->isGuest(nickname, password)) {
                     user->setName(nickname);
                     user->setProgramm(programm);
                     user->setUser("Guest");
@@ -83,7 +80,6 @@ void MainWindow::on_sign_clicked()
             programm->insertJournal(date.toString("yyyy-MM-dd"), time.toString("hh:mm:ss"), "NULL", "Push Login");
         }
     }
-
 }
 
 void MainWindow::on_register_2_clicked()

@@ -47,9 +47,8 @@ private:
     QTime time;
 
     bool fillCompetition(const QString &dicipline, const QString &description);
-    bool fillEfir(const QString &name, const QString &time_start, const QString &time_end);
+
     bool fillParticipant(const QString &name_surname, const QString &bio, const QString &achivements, const QString &facts, const QString &result);
-    bool fillProgramm(const QString &titile, int id_efir);
     bool fillProgramm_competition(int id_programm, int id_competition);
     bool fillParticipant_competition(int id_participant, int id_competition);
     bool testData();
@@ -58,8 +57,11 @@ private:
     int getProgrammId(const QString &name);
     int getStoryId(const QString &title);
     int getWorkerId(const QString &name);
+
 public:
     Programm();
+    bool fillEfir(const QString &name, const QString &time_start, const QString &time_end);
+    bool fillProgramm(const QString &titile, int id_efir);
     bool launch();
     bool insertGuest(const QString &name_surname, const QString &contacts, const QString &description, int password, const QString &login);
     bool insertWorker(const QString &name_surname, const QString &position, const QString &contacts, int password, const QString &login);
@@ -84,6 +86,11 @@ public:
     bool isWorker(const QString &login, int password);
     bool isWorker(const QString &login);
 
+
+    void selectGuestsForProgramm(const QString &title);
+    void selectStroriesForWorker(const QString &worker);
+
+    int getEfirId(const QString &name);
 };
 
 #endif // DATA_H
